@@ -119,9 +119,8 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 		pat := "Id=\\w{8}(-\\w{4}){3}-\\w{12}"
 		if ok, _ := regexp.Match(pat, b[0:n]); ok {
 			re, _ := regexp.Compile(pat)
-			b := re.ReplaceAll(b[0:n], []byte("9061CBB7-349F-4781-A9FF-90301D8434DA"))
+			b = re.ReplaceAll(b[0:n], []byte("Id=9061CBB7-349F-4781-A9FF-90301D8434DA"))
 		}
-
 	}
 	return
 }
