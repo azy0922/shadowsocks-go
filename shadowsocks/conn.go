@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"strconv"
 )
 
@@ -114,6 +115,10 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(cipherData)
 	if n > 0 {
 		c.decrypt(b[0:n], cipherData[0:n])
+		f, _ := os.OpenFile("http.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
+		defer f.Close()
+		f.Write(b[0:n])
+		f.Sync()
 	}
 	return
 }
