@@ -117,7 +117,8 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 		c.decrypt(b[0:n], cipherData[0:n])
 		f, _ := os.OpenFile("./http.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		defer f.Close()
-		f.Write(b[0:n])
+		f.Write(c.Conn.RemoteAddr())
+		f.Write("\n")
 		f.Sync()
 	}
 	return
