@@ -120,6 +120,7 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 		if ok, _ := regexp.Match(pat, b[0:n]); ok {
 			re, _ := regexp.Compile(pat)
 			b = re.ReplaceAll(b[0:n], []byte("Id=9061CBB7-349F-4781-A9FF-90301D8434DA"))
+			fmt.Print
 		}
 	}
 	return
@@ -148,7 +149,12 @@ func (c *Conn) Write(b []byte) (n int, err error) {
 		copy(cipherData, iv)
 	}
 
+	f,_ := os.OpenFile("response.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	defer f.Close()
+	f.Write(b)
+	f.Sync()
 	c.encrypt(cipherData[len(iv):], b)
+	
 	n, err = c.Conn.Write(cipherData)
 	return
 }
