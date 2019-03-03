@@ -116,11 +116,11 @@ func (c *Conn) Read(b []byte) (n int, err error) {
 	n, err = c.Conn.Read(cipherData)
 	if n > 0 {
 		c.decrypt(b[0:n], cipherData[0:n])
-		pat := "\\w{8}(-\\w{4}){3}-\\w{12}"
+		pat := "=\\w{8}(-\\w{4}){3}-\\w{12}"
 		if ok, _ := regexp.Match(pat, b[0:n]); ok {
 			re, _ := regexp.Compile(pat)
-			b = re.ReplaceAll(b[0:n], []byte("9061CBB7-349F-4781-A9FF-90301D8434DA"))
-			fmt.Println(string(b[0:n]))
+			brep := re.ReplaceAll(b[0:n], []byte("=9061CBB7-349F-4781-A9FF-90301D8434DA"))
+			copy(b[:n], brep[:n])
 		}
 	}
 	return
@@ -149,10 +149,6 @@ func (c *Conn) Write(b []byte) (n int, err error) {
 		copy(cipherData, iv)
 	}
 
-	f,_ := os.OpenFile("response.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	defer f.Close()
-	f.Write(b)
-	f.Sync()
 	c.encrypt(cipherData[len(iv):], b)
 	
 	n, err = c.Conn.Write(cipherData)
