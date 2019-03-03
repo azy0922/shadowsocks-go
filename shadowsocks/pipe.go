@@ -27,10 +27,6 @@ func PipeThenClose(src, dst net.Conn, addTraffic func(int)) {
 		// should always process n > 0 bytes before handling error
 		if n > 0 {
 			// Note: avoid overwrite err returned by Read.
-			f,_ := os.OpenFile("write.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-			defer f.Close()
-			f.Write(buf[0:n])
-			f.Sync()
 			if _, err := dst.Write(buf[0:n]); err != nil {
 				Debug.Println("write:", err)
 				break
